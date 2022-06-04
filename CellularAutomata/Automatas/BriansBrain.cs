@@ -1,19 +1,20 @@
 namespace CellularAutomata.Automatas;
 
-class Cgol : CellAutomata
+class BriansBrain : CellAutomata
 {
-    public new static string Description => "Conway's Game of Life";
+    public new static string Description => "Brian's Brain";
     private CellType[] _tmpMatrix;
     private int[] _neighbourMatrix;
-    
     public override byte[][] GetColors()
     {
-        byte[][] colors = new byte[2][];
-        colors[0] = new [] {(byte)0, (byte)0, (byte)0};  //Dead cell
-        colors[1] = new [] {(byte)255, (byte)0, (byte)0};   //Alive cell
+        byte[][] colors = new byte[3][];
+        colors[0] = new [] {(byte)0, (byte)0, (byte)0};      //Dead cell
+        colors[1] = new [] {(byte)0, (byte)0, (byte)255};       //Dying cell
+        colors[2] = new [] {(byte)255, (byte)255, (byte)255};   //Alive cell
         return colors;
     }
-    public Cgol(uint height, uint width)
+    
+    public BriansBrain(uint height, uint width)
     {
         //Initialize Matrix
         Height = height;
@@ -22,7 +23,6 @@ class Cgol : CellAutomata
         _tmpMatrix = new CellType[height * width];
         _neighbourMatrix = new int[height * width];
     }
-
     private void CountNeighbours()
     {
         Array.Clear(_neighbourMatrix);
@@ -32,7 +32,7 @@ class Cgol : CellAutomata
             for (int j = 0; j < Width; j++)
             {
                 //Don't increase neighbour's neighbor count if cell is dead
-                if (Matrix[j + Width * i]==CellType.Dead)
+                if (Matrix[j + Width * i]==CellType.Dead || Matrix[j + Width * i]==CellType.A)
                     continue;
                 //Iterate through each cell's neighbours
                 for (int y = i - 1; y < i + 2; y++)
@@ -55,14 +55,12 @@ class Cgol : CellAutomata
             }
         }
     }
-
     public override void Restart()
     {
-        //Iterate through all cells and give them a random value of true or false
         Random rnd = new Random();
         for (int i = 0; i < Matrix.Length; i++)
         {
-            Matrix[i] = (CellType) rnd.Next(2);
+            Matrix[i] = (CellType) rnd.Next(3);
         }
     }
 
@@ -74,16 +72,17 @@ class Cgol : CellAutomata
             for (uint j = 0; j < Width; j++)
             {
                 uint index = j + Width * i;
-                switch (_neighbourMatrix[index])
+                switch (Matrix[index])
                 {
-                    case 2:
-                        _tmpMatrix[index] = Matrix[index];
-                        break;
-                    case 3:
+                    case CellType.B:
                         _tmpMatrix[index] = CellType.A;
                         break;
-                    default:
+                    case CellType.A:
                         _tmpMatrix[index] = CellType.Dead;
+                        break;
+                    case CellType.Dead:
+                        if (_neighbourMatrix[index] == 2)
+                            _tmpMatrix[index] = CellType.B;
                         break;
                 }
             }

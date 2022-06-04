@@ -7,8 +7,8 @@ namespace CellularAutomata
     {
         public const uint Height = 1080;
         public const uint Width = 1920;
-        public const uint Zoom = 1;
-        public const uint Delay = 50;
+        public const uint Zoom = 4;
+        public const uint Delay = 10;
     }
 
     class Program
@@ -36,7 +36,7 @@ namespace CellularAutomata
         private static (Type, uint, uint, uint, uint) GetStartingParameters()
         {
             uint automataindex, width, height, scale, delay;
-            Type[] allautomatas = {typeof(LangtonAnt), typeof(LangtonLoop), typeof(Cgol)};
+            Type[] allautomatas = {typeof(LangtonAnt), typeof(LangtonLoop), typeof(Cgol), typeof(BriansBrain)};
             for (int i = 0; i < allautomatas.Length; i++)
             {
                 Console.WriteLine($"{i}. " + allautomatas[i].GetProperty("Description")!.GetValue(null));
@@ -70,7 +70,7 @@ namespace CellularAutomata
             while (true)
             {
                 Console.Write(">> ");
-                string? userinput = Console.ReadLine();
+                string userinput = Console.ReadLine()!;
                 if (userinput == string.Empty)
                     continue;
                 if (char.ToLower(userinput[0]) == 'y')

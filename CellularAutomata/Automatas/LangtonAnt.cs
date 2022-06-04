@@ -18,7 +18,7 @@ class LangtonAnt : CellAutomata
     public override byte[][] GetColors()
     {
         byte[][] colors = new byte[2][];
-        colors[0] = new[] {(byte) 24, (byte) 24, (byte) 24}; //Dead cell
+        colors[0] = new[] {(byte) 0, (byte) 0, (byte) 0}; //Dead cell
         colors[1] = new[] {(byte) 255, (byte) 0, (byte) 0}; //Alive cell
         return colors;
     }

@@ -52,7 +52,7 @@ class LangtonLoop : CellAutomata
     public override byte[][] GetColors()
     {
         byte[][] colors = new byte[8][];
-        colors[0] = new[] {(byte) 48, (byte) 48, (byte) 48}; //Background
+        colors[0] = new[] {(byte) 0, (byte) 0, (byte) 0}; //Background
         colors[1] = new[] {(byte) 0, (byte) 0, (byte) 255};
         colors[2] = new[] {(byte) 255, (byte) 0, (byte) 0};
         colors[3] = new[] {(byte) 0, (byte) 255, (byte) 0};

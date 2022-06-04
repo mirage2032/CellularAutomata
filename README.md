@@ -5,6 +5,8 @@ For graphics SDL2 was used
 
 ## Currently implemented Automata
 Currently only the following Automata are implemented
-* Conway's Game of Life
+
 * Langton's Ant
 * Langton's Loop (WIP)
+* Conway's Game of Life
+* Brian's Brain
