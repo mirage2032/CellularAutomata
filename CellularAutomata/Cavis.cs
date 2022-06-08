@@ -14,8 +14,8 @@ class CaVis
 
     public CaVis(CellAutomata automata, uint scale, byte[][] colors)
     {
-        this._automata = automata;
-        this._colors = colors;
+        _automata = automata;
+        _colors = colors;
 
         if (SDL.SDL_WasInit(SDL.SDL_INIT_VIDEO) == 0)
             if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0)

@@ -15,8 +15,8 @@ enum CellType
 abstract class CellAutomata
 {
     public static string Description => string.Empty;
-    public uint Height { get; protected init; }
-    public uint Width { get; protected init; }
+    public int Height { get; protected init; }
+    public int Width { get; protected init; }
     protected CellType[] Matrix = null!;
 
     public abstract byte[][] GetColors();

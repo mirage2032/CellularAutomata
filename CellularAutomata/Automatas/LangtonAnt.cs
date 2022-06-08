@@ -13,7 +13,7 @@ class LangtonAnt : CellAutomata
     }
 
     private Directions _direction = Directions.Up;
-    private uint _antX, _antY;
+    private int _antX, _antY;
 
     public override byte[][] GetColors()
     {
@@ -23,7 +23,7 @@ class LangtonAnt : CellAutomata
         return colors;
     }
 
-    public LangtonAnt(uint height, uint width)
+    public LangtonAnt(int height, int width)
     {
         Height = height;
         Width = width;

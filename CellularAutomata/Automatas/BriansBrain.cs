@@ -3,7 +3,6 @@ namespace CellularAutomata.Automatas;
 class BriansBrain : CellAutomata
 {
     public new static string Description => "Brian's Brain";
-    private CellType[] _tmpMatrix;
     private int[] _neighbourMatrix;
     public override byte[][] GetColors()
     {
@@ -14,13 +13,12 @@ class BriansBrain : CellAutomata
         return colors;
     }
     
-    public BriansBrain(uint height, uint width)
+    public BriansBrain(int height, int width)
     {
         //Initialize Matrix
         Height = height;
         Width = width;
         Matrix = new CellType[height * width];
-        _tmpMatrix = new CellType[height * width];
         _neighbourMatrix = new int[height * width];
     }
     private void CountNeighbours()
@@ -67,27 +65,25 @@ class BriansBrain : CellAutomata
     public override void Step()
     {
         CountNeighbours();
-        for (uint i = 0; i < Height; i++)
+        for (int i = 0; i < Height; i++)
         {
-            for (uint j = 0; j < Width; j++)
+            for (int j = 0; j < Width; j++)
             {
-                uint index = j + Width * i;
+                int index = j + Width * i;
                 switch (Matrix[index])
                 {
                     case CellType.B:
-                        _tmpMatrix[index] = CellType.A;
+                        Matrix[index] = CellType.A;
                         break;
                     case CellType.A:
-                        _tmpMatrix[index] = CellType.Dead;
+                        Matrix[index] = CellType.Dead;
                         break;
                     case CellType.Dead:
                         if (_neighbourMatrix[index] == 2)
-                            _tmpMatrix[index] = CellType.B;
+                            Matrix[index] = CellType.B;
                         break;
                 }
             }
         }
-
-        Matrix = _tmpMatrix;
     }
 }

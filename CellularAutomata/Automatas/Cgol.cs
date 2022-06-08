@@ -3,8 +3,7 @@ namespace CellularAutomata.Automatas;
 class Cgol : CellAutomata
 {
     public new static string Description => "Conway's Game of Life";
-    private CellType[] _tmpMatrix;
-    private int[] _neighbourMatrix;
+    private readonly int[] _neighbourMatrix;
     
     public override byte[][] GetColors()
     {
@@ -13,13 +12,12 @@ class Cgol : CellAutomata
         colors[1] = new [] {(byte)255, (byte)0, (byte)0};   //Alive cell
         return colors;
     }
-    public Cgol(uint height, uint width)
+    public Cgol(int height, int width)
     {
         //Initialize Matrix
         Height = height;
         Width = width;
         Matrix = new CellType[height * width];
-        _tmpMatrix = new CellType[height * width];
         _neighbourMatrix = new int[height * width];
     }
 
@@ -69,26 +67,24 @@ class Cgol : CellAutomata
     public override void Step()
     {
         CountNeighbours();
-        for (uint i = 0; i < Height; i++)
+        for (int i = 0; i < Height; i++)
         {
-            for (uint j = 0; j < Width; j++)
+            for (int j = 0; j < Width; j++)
             {
-                uint index = j + Width * i;
+                int index = j + Width * i;
                 switch (_neighbourMatrix[index])
                 {
                     case 2:
-                        _tmpMatrix[index] = Matrix[index];
+                        Matrix[index] = Matrix[index];
                         break;
                     case 3:
-                        _tmpMatrix[index] = CellType.A;
+                        Matrix[index] = CellType.A;
                         break;
                     default:
-                        _tmpMatrix[index] = CellType.Dead;
+                        Matrix[index] = CellType.Dead;
                         break;
                 }
             }
         }
-
-        Matrix = _tmpMatrix;
     }
 }

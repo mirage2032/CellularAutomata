@@ -44,9 +44,8 @@ class LangtonLoop : CellAutomata
         new[] {"600011", "600021", "602120", "612125", "612131", "612225"},
         new[] {"700077", "701120", "701220", "701250", "702120", "702221", "702251", "702321", "702525", "702720"}
     };
-
-    private CellType[] _tmpMatrix;
-    private CellType[][] _neighbourMatrix;
+    
+    private readonly CellType[][] _neighbourMatrix;
     private readonly int[][] _relativeNeighbours = {new[] {1, 0}, new[] {-1, 0}, new[] {0, 1}, new[] {0, -1}};
 
     public override byte[][] GetColors()
@@ -63,12 +62,11 @@ class LangtonLoop : CellAutomata
         return colors;
     }
 
-    public LangtonLoop(uint height, uint width)
+    public LangtonLoop(int height, int width)
     {
         Height = height;
         Width = width;
         Matrix = new CellType[height * width];
-        _tmpMatrix = new CellType[height * width];
         _neighbourMatrix = new CellType[height * width][];
         for (int i = 0; i < _neighbourMatrix.Length; i++)
             _neighbourMatrix[i] = new CellType[4];
@@ -159,17 +157,15 @@ class LangtonLoop : CellAutomata
     public override void Step()
     {
         CheckNeighbours();
-        for (uint i = 0; i < Height; i++)
+        for (int i = 0; i < Height; i++)
         {
-            for (uint j = 0; j < Width; j++)
+            for (int j = 0; j < Width; j++)
             {
-                uint index = j + Width * i;
+                int index = j + Width * i;
                 CellType cell = Matrix[index];
                 CellType[] neighbours = _neighbourMatrix[index];
-                _tmpMatrix[index] = NextState(cell, neighbours);
+                Matrix[index] = NextState(cell, neighbours);
             }
         }
-
-        Matrix = _tmpMatrix;
     }
 }
