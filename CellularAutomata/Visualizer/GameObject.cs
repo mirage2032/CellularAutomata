@@ -31,7 +31,7 @@ public struct Action
     {
         SceneName = "";
         Type = type;
-        Data = new List<string>{};
+        Data = new List<string> { };
     }
 }
 
@@ -44,9 +44,11 @@ public abstract class GameObject
     protected int _w;
 
     protected int _h;
+    public int Z = 0;
     public int W() => _w;
 
     public int H() => _h;
+    public GameObject[] children;
 
     public virtual IntPtr GenTexture()
     {

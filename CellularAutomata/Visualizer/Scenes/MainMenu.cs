@@ -16,7 +16,7 @@ public class MainMenu : Scene
         {
             string description = (string) Constants.allautomatas[i].GetProperty("Description")!.GetValue(null)!;
             Button btn = new Button(renderer,
-                "/home/alx/RiderProjects/CellularAutomata/CellularAutomata/bin/Release/net6.0/sans.ttf", description,
+                "sans.ttf", description,
                 35, clactive, clinactive, new Action(ActionType.ChangeScene, "Automata", new List<string> {description }))
             {
                     X=x,
