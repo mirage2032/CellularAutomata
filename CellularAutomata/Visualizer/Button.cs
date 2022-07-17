@@ -2,60 +2,69 @@ using SDL2;
 
 namespace CellularAutomata.Visualizer;
 
-public enum ButtonAction
+public class Button :GameObject
 {
-    None,
-    Start,
-    Settings,
-    MainMenu,
-    StartAutomata
-}
+    private string Text;
+    private Action? _action;
+    private SDL.SDL_Color clactive;
+    private SDL.SDL_Color _clinactive;
+    private IntPtr _renderer;
+    private IntPtr _font;
+    private bool _active;
+    private bool _changed = false;
 
-public class Button
-{
-    private IntPtr _surface;
-    public string Fontpath;
-    public string Text;
-    public int X = 0, Y = 0;
-    public ButtonAction Action = ButtonAction.None;
-    public Type? Automata;
-    public int W, H;
-    public int Size;
-    public SDL.SDL_Color Clactive;
-    public SDL.SDL_Color Clinactive;
-    public IntPtr Renderer;
-    public IntPtr Texture { get; private set; }
-
-    public Button(IntPtr renderer, string fontpath, string text, int size, SDL.SDL_Color clactive,
-        SDL.SDL_Color clinactive)
+    public Button(IntPtr renderer, string fontpath, string text, int fontsize, SDL.SDL_Color clactive,
+        SDL.SDL_Color clinactive,Action? action=null)
     {
-        Renderer = renderer;
-        Fontpath = fontpath;
+        _action = action;
+        _renderer = renderer;
         Text = text;
-        Size = size;
-        Clactive = clactive;
-        Clinactive = clinactive;
-        MakeTexture(false);
+        this.clactive = clactive;
+        _clinactive = clinactive;
+        _font = SDL_ttf.TTF_OpenFont(fontpath, fontsize);
+        _createTxt(false);
     }
 
     private void _freemem()
     {
         SDL.SDL_FreeSurface(_surface);
-        SDL.SDL_DestroyTexture(Texture);
+        SDL.SDL_DestroyTexture(_texture);
     }
 
     private void _createTxt(bool active)
     {
-        IntPtr font = SDL_ttf.TTF_OpenFont(Fontpath, Size);
-        _surface = SDL_ttf.TTF_RenderText_Blended(font, Text, active ? Clactive : Clinactive);
-        Texture = SDL.SDL_CreateTextureFromSurface(Renderer, _surface);
-        SDL_ttf.TTF_SizeText(font, Text, out W, out H);
+        _surface = SDL_ttf.TTF_RenderText_Blended(_font, Text, active ? clactive : _clinactive);
+        _texture = SDL.SDL_CreateTextureFromSurface(_renderer, _surface);
+        SDL_ttf.TTF_SizeText(_font, Text, out _w, out _h);
     }
 
-    public void MakeTexture(bool active)
+    public sealed override IntPtr GenTexture()
     {
-        _freemem();
-        _createTxt(active);
+        if(_changed)
+        {
+            _changed = false;
+            _freemem();
+            _createTxt(_active);
+        }
+
+        return _texture;
+    }
+
+    public override void OnHover()
+    {
+        _changed = true;
+        _active = true;
+    }
+
+    public override void OnUnhover()
+    {
+        _changed = true;
+        _active = false;
+    }
+
+    public override Action? OnClick()
+    {
+        return _action;
     }
 
     ~Button()

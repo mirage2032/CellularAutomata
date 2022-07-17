@@ -1,4 +1,5 @@
 ﻿using CellularAutomata.Automatas;
+using CellularAutomata.Visualizer.Scenes;
 
 namespace CellularAutomata
 {
@@ -16,7 +17,9 @@ namespace CellularAutomata
     {
         static void Main()
         {
-            var viz = new Visualizer.Visualizer();
+            Dictionary<String, Type> allScenes = new();
+            allScenes.Add("Start",typeof(MainMenu));
+            var viz = new Visualizer.Visualizer(allScenes);
             viz.Init();
         }
     }

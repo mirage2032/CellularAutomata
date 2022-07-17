@@ -1,4 +1,4 @@
-/*namespace CellularAutomata.Automatas;
+namespace CellularAutomata.Automatas;
 
 class Rule90 : CellAutomata
 {
