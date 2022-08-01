@@ -18,7 +18,7 @@ namespace CellularAutomata
         static void Main()
         {
             Dictionary<String, Type> allScenes = new();
-            allScenes.Add("Start",typeof(MainMenu));
+            allScenes.Add("Start",typeof(SMainMenu));
             var viz = new Visualizer.Visualizer(allScenes);
             viz.Init();
         }

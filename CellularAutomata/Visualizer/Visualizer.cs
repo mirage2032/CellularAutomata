@@ -125,7 +125,14 @@ public class Visualizer
     {
         while (_scene!=null && !_quit)
         {
-            List<Action> engineAction = _scene.HandleInput();
+            List<Action> engineActions = _scene.HandleInput();
+            foreach (var action in engineActions)
+            {
+                if (action.Type == ActionType.Quit)
+                    _quit = true;
+                if (action.Type == ActionType.ChangeScene)
+                    _scene = (Scene?) Activator.CreateInstance(_allscenes[action.Data[0]], _window, _renderer);
+            }
             _scene.Tick();
             _scene.Render();
             SDL.SDL_Delay(1);

@@ -16,9 +16,26 @@ public abstract class Scene
 
     public void Render()
     {
-        foreach (var obj in _gameObjects)
+        List<GameObject> allObjects=new List<GameObject>();
+        allObjects.AddRange(_gameObjects);
+        List<GameObject> searchCurrent = _gameObjects;
+        List<GameObject> searchNext = new List<GameObject>();
+        while (true)
         {
-            RenderGameObjects(obj);
+            if (searchCurrent.Count == 0) break;
+            foreach (var obj in searchCurrent)
+            {
+                allObjects.Add(obj);
+                searchNext.AddRange(obj.children);
+            }
+
+            searchCurrent = searchNext;
+            searchNext = new List<GameObject>();
+        }
+        allObjects = allObjects.OrderBy(o => o.Z).ToList();
+        foreach (var obj in allObjects)
+        {
+         RenderGameObjects(obj);
         }
         SDL.SDL_RenderPresent(_renderer);
     }

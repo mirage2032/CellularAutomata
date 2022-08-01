@@ -3,34 +3,40 @@ namespace CellularAutomata.Visualizer;
 public enum ActionType
 {
     None,
+    ChangeAutomata,
     ChangeScene,
     Quit
 }
 
 public struct Action
 {
-    public String? SceneName { get; }
+    public Type? AutomataType { get; }
     public ActionType Type { get; }
+    
+    public Scene? Scene { get; }
     public List<string> Data { get; }
 
-    public Action(ActionType type, String scenename, List<string> data)
+    public Action(ActionType type, Type automatatype, List<string> data)
     {
-        SceneName = scenename;
+        AutomataType = automatatype;
         Type = type;
+        Scene = null;
         Data = data;
     }
 
     public Action(ActionType type, List<string> data)
     {
-        SceneName = "";
+        AutomataType = null;
         Type = type;
+        Scene = null;
         Data = data;
     }
 
     public Action(ActionType type)
     {
-        SceneName = "";
+        AutomataType = null;
         Type = type;
+        Scene = null;
         Data = new List<string> { };
     }
 }
@@ -48,13 +54,13 @@ public abstract class GameObject
     public int W() => _w;
 
     public int H() => _h;
-    public GameObject[] children;
+    public List<GameObject> children = new List<GameObject>();
 
     public virtual IntPtr GenTexture()
     {
         return _texture;
     }
-
+    
     public virtual void OnHover()
     {
     }
@@ -67,4 +73,10 @@ public abstract class GameObject
     {
         return null;
     }
+
+    public virtual void Step()
+    {
+        
+    }
+    
 }

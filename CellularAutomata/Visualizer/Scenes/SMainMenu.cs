@@ -2,9 +2,9 @@ using SDL2;
 
 namespace CellularAutomata.Visualizer.Scenes;
 
-public class MainMenu : Scene
+public class SMainMenu : Scene
 {
-    public MainMenu(IntPtr window, IntPtr renderer)
+    public SMainMenu(IntPtr window, IntPtr renderer)
     {
         _window = window;
         _renderer = renderer;
@@ -17,7 +17,7 @@ public class MainMenu : Scene
             string description = (string) Constants.allautomatas[i].GetProperty("Description")!.GetValue(null)!;
             Button btn = new Button(renderer,
                 "sans.ttf", description,
-                35, clactive, clinactive, new Action(ActionType.ChangeScene, "Automata", new List<string> {description }))
+                35, clactive, clinactive, new Action(ActionType.ChangeAutomata, Constants.allautomatas[i], new List<string> {description }))
             {
                     X=x,
                     Y=y
