@@ -16,6 +16,16 @@ public abstract class Scene
 
     public virtual void Render()
     {
+        RenderClear();
+        RenderDraw();
+    }
+    public virtual void RenderClear()
+    {
+        SDL.SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
+        SDL.SDL_RenderClear(_renderer);
+    }
+    public virtual void RenderDraw()
+    {
         List<GameObject> allObjects=new List<GameObject>();
         allObjects.AddRange(_gameObjects);
         List<GameObject> searchCurrent = _gameObjects;
@@ -33,12 +43,9 @@ public abstract class Scene
             searchNext = new List<GameObject>();
         }
         allObjects = allObjects.OrderBy(o => o.Z).ToList();
-        
-        SDL.SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
-        SDL.SDL_RenderClear(_renderer);
         foreach (var obj in allObjects)
         {
-         RenderGameObjects(obj);
+            RenderGameObjects(obj);
         }
         SDL.SDL_RenderPresent(_renderer);
     }

@@ -25,7 +25,7 @@ public class SAutomata : Scene
         _automata.Step();
     }
 
-    public override void Render()
+    public override void RenderDraw()
     {
 
         for (int y = 0; y < _automata.Height; y++)
@@ -48,7 +48,7 @@ public class SAutomata : Scene
             }
         }
 
-        base.Render();
+        base.RenderDraw();
     }
 
     ~SAutomata()
