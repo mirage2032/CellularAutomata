@@ -1,3 +1,4 @@
+using System.Drawing;
 using CellularAutomata.Automatas;
 using SDL2;
 
@@ -18,7 +19,7 @@ public class Visualizer
     public Visualizer(Dictionary<String, Type> allscenes)
     {
         _allscenes = allscenes;
-        _config = ConfigParser.GetConfig("config.cfg",
+        _config = new Configuration("config.cfg",
             new Configuration()
                 {Delay = Constants.Delay, H = Constants.Height, W = Constants.Width, Scale = Constants.Scale});
         if (SDL.SDL_WasInit(SDL.SDL_INIT_VIDEO) == 0)
@@ -36,7 +37,7 @@ public class Visualizer
             }
 
         _window = SDL.SDL_CreateWindow("Visualiser", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED,
-            _config.W * _config.Scale, _config.H * _config.Scale, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
+            _config.W, _config.H, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
         if (_window == IntPtr.Zero)
         {
             Console.WriteLine("Unable to create window");
@@ -50,80 +51,12 @@ public class Visualizer
             Error = "SDL CreateRenderer";
         }
 
-        SDL.SDL_RenderSetScale(_renderer, _config.Scale, _config.Scale);
         _scene = (Scene?) Activator.CreateInstance(_allscenes["Start"], _window, _renderer);
     }
 
-    /*private void StartMenu()
-    {
-        _gameObjects.Clear();
-        SDL.SDL_Color clactive = new SDL.SDL_Color() {r = 111, g = 66, b = 245, a = 255};
-        SDL.SDL_Color clinactive = new SDL.SDL_Color() {r = 183, g = 250, b = 111, a = 255};
-        int y = 50;
-        int x = 50;
-        for (int i = 0; i < Constants.allautomatas.Length; i++)
-        {
-            string description = (string) Constants.allautomatas[i].GetProperty("Description")!.GetValue(null)!;
-            Button btn = new Button(_renderer, "/home/alx/RiderProjects/CellularAutomata/CellularAutomata/bin/Release/net6.0/sans.ttf", description, 35, clactive, clinactive)
-            {
-                X = x,
-                Y = y,
-                Action = new Action(),
-                index = i
-            };
-            y += btn.H();
-            _gameObjects.Add(btn);
-        }
-    }
-
-    private void StartAutomata(Type automata)
-    {
-        _gameObjects.Clear();
-        _automata = (CellAutomata) Activator.CreateInstance(automata, _config.H, _config.W)!;
-        _automata.Restart();
-        _colormap = _automata.GetColors();
-    }
-
-
-    private void Render()
-    {
-        if (_automata != null)
-        {
-            SDL.SDL_SetRenderDrawColor(_renderer, _colormap![0][0], _colormap[0][1], _colormap[0][2], 255);
-            SDL.SDL_RenderClear(_renderer);
-            for (int y = 0; y < _automata.Height; y++)
-            {
-                for (int x = 0; x < _automata.Width; x++)
-                {
-                    CellType cell = _automata.GetCell(x, y);
-                    if (cell != CellType.Dead)
-                    {
-                        byte[] color = _colormap[(int) cell];
-                        SDL.SDL_SetRenderDrawColor(_renderer, color[0], color[1], color[2], 255);
-                        SDL.SDL_RenderDrawPoint(_renderer, x, y);
-                    }
-                }
-            }
-        }
-        else
-        {
-            SDL.SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
-            SDL.SDL_RenderClear(_renderer);
-        }
-
-        foreach (var btn in _gameObjects)
-        {
-            RenderGameObject(btn, btn.X, btn.Y);
-            Console.WriteLine(SDL.SDL_GetError());
-        }
-
-        SDL.SDL_RenderPresent(_renderer);
-    }
-    */
-
     public void Init()
     {
-        while (_scene!=null && !_quit)
+        while (_scene != null && !_quit)
         {
             List<Action> engineActions = _scene.HandleInput();
             foreach (var action in engineActions)
@@ -131,11 +64,24 @@ public class Visualizer
                 if (action.Type == ActionType.Quit)
                     _quit = true;
                 if (action.Type == ActionType.ChangeScene)
-                    _scene = (Scene?) Activator.CreateInstance(_allscenes[action.Data[0]], _window, _renderer);
+                    switch (action.Scene)
+                    {
+                        case "Automata":
+                            _scene = (Scene?) Activator.CreateInstance(_allscenes[action.Scene], _window, _renderer,
+                                action.AutomataType, _config);
+                            break;
+                        case "Settings":
+                            _scene = (Scene?) Activator.CreateInstance(_allscenes[action.Scene], _window, _renderer,
+                                _config);
+                            break;
+                        default:
+                            _scene = (Scene?) Activator.CreateInstance(_allscenes[action.Scene!], _window, _renderer);
+                            break;
+                    }
             }
             _scene.Tick();
             _scene.Render();
-            SDL.SDL_Delay(1);
+            SDL.SDL_Delay(_config.Delay);
         }
     }
 

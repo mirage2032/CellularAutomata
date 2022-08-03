@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace CellularAutomata.Visualizer;
 
 public enum ActionType
@@ -5,16 +7,21 @@ public enum ActionType
     None,
     ChangeAutomata,
     ChangeScene,
+    Callback,
     Quit
 }
+public delegate void CallbackDelegate();
 
 public struct Action
 {
     public Type? AutomataType { get; }
     public ActionType Type { get; }
     
-    public Scene? Scene { get; }
+    public string? Scene { get; }
     public List<string> Data { get; }
+    
+    public CallbackDelegate Callback { get; }
+    
 
     public Action(ActionType type, Type automatatype, List<string> data)
     {
@@ -22,6 +29,34 @@ public struct Action
         Type = type;
         Scene = null;
         Data = data;
+        Callback = null;
+    }
+
+    public Action(ActionType type,string scene, Type automataType)
+    {
+        AutomataType = automataType;
+        Type = type;
+        Scene = scene;
+        Data = null;
+        Callback = null;
+    }
+    public Action(ActionType type,string scene)
+    {
+        AutomataType = null;
+        Type = type;
+        Scene = scene;
+        Data = null;
+        Callback = null;
+    }
+
+
+    public Action(ActionType type, CallbackDelegate callback)
+    {
+        AutomataType = null;
+        Type = type;
+        Callback = callback;
+        Data = null;
+        Scene = null;
     }
 
     public Action(ActionType type, List<string> data)
@@ -30,6 +65,7 @@ public struct Action
         Type = type;
         Scene = null;
         Data = data;
+        Callback = null;
     }
 
     public Action(ActionType type)
@@ -38,6 +74,7 @@ public struct Action
         Type = type;
         Scene = null;
         Data = new List<string> { };
+        Callback = null;
     }
 }
 

@@ -17,47 +17,35 @@ public class SMainMenu : Scene
             string description = (string) Constants.allautomatas[i].GetProperty("Description")!.GetValue(null)!;
             Button btn = new Button(renderer,
                 "sans.ttf", description,
-                35, clactive, clinactive, new Action(ActionType.ChangeAutomata, Constants.allautomatas[i], new List<string> {description }))
+                35, clactive, clinactive, new Action(ActionType.ChangeScene, "Automata", Constants.allautomatas[i]))
             {
                     X=x,
                     Y=y
             };
-            y += btn.H();
             _gameObjects.Add(btn);
+            y += btn.H();
         }
-    }
-
-    public override List<Action> HandleInput()
-    {
-        List<Action> actions = new();
-        OnHoverUpdate();
-        while (SDL.SDL_PollEvent(out var e) != 0)
         {
-            switch (e.type)
+            //settings button
+            Button btn = new Button(renderer, "sans.ttf", "Settings", 55, clactive, clinactive,
+                new Action(ActionType.ChangeScene,"Settings"))
             {
-                case SDL.SDL_EventType.SDL_QUIT:
-                    actions.Add(new Action(ActionType.Quit));
-                    break;
-                case SDL.SDL_EventType.SDL_KEYDOWN:
-                    switch (e.key.keysym.sym)
-                    {
-                        case (SDL.SDL_Keycode.SDLK_ESCAPE):
-                            actions.Add(new Action(ActionType.Quit));
-                            break;
-                    }
-
-                    break;
-                case SDL.SDL_EventType.SDL_MOUSEBUTTONDOWN:
-                    if (e.button.button == SDL.SDL_BUTTON_LEFT && _onHoverActive != null)
-                    {
-                        actions.Add(_onHoverActive.OnClick() ?? new Action(ActionType.None));
-                    }
-
-                    break;
-            }
+                X = x, Y = y
+            };
+            _gameObjects.Add(btn);
+            y += btn.H();
         }
-
-        return actions;
+        {//exit button
+            y += 50;
+            SDL.SDL_Color exit_clactive = new SDL.SDL_Color() {r = 255, g = 49, b = 25, a = 255};
+            SDL.SDL_GetWindowSize(window,out int w, out int h);
+            Button btn = new Button(renderer, "sans.ttf", "Exit", 55, exit_clactive, clinactive,
+                new Action(ActionType.Quit));
+            _gameObjects.Add(btn);
+            btn.X = w-btn.W()-75;
+            btn.Y = h - btn.H()-75;
+            y += btn.H();
+        }
     }
- 
+
 }

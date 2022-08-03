@@ -14,7 +14,7 @@ public abstract class Scene
         SDL.SDL_RenderCopy(_renderer, obj.GenTexture(), IntPtr.Zero, ref rect);
     }
 
-    public void Render()
+    public virtual void Render()
     {
         List<GameObject> allObjects=new List<GameObject>();
         allObjects.AddRange(_gameObjects);
@@ -33,6 +33,9 @@ public abstract class Scene
             searchNext = new List<GameObject>();
         }
         allObjects = allObjects.OrderBy(o => o.Z).ToList();
+        
+        SDL.SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
+        SDL.SDL_RenderClear(_renderer);
         foreach (var obj in allObjects)
         {
          RenderGameObjects(obj);
@@ -74,9 +77,46 @@ public abstract class Scene
         }
     }
 
-    public void Tick()
+    public virtual void Tick()
     {
     }
 
-    public virtual List<Action> HandleInput() => new();
+    public List<Action> HandleInput()
+    {
+        List<Action> actions = new();
+        OnHoverUpdate();
+        while (SDL.SDL_PollEvent(out var e) != 0)
+        {
+            switch (e.type)
+            {
+                case SDL.SDL_EventType.SDL_QUIT:
+                    actions.Add(new Action(ActionType.Quit));
+                    break;
+                case SDL.SDL_EventType.SDL_KEYDOWN:
+                    switch (e.key.keysym.sym)
+                    {
+                        case (SDL.SDL_Keycode.SDLK_ESCAPE):
+                            actions.Add(new Action(ActionType.Quit));
+                            break;
+                    }
+
+                    break;
+                case SDL.SDL_EventType.SDL_MOUSEBUTTONDOWN:
+                    if (e.button.button == SDL.SDL_BUTTON_LEFT && _onHoverActive != null)
+                    {
+                        Action? action = _onHoverActive.OnClick() ?? null;
+                        if (action == null)
+                            break;
+                        if (action.Value.Type==ActionType.Callback)
+                            action.Value.Callback.Invoke();
+                        else
+                            actions.Add(_onHoverActive.OnClick() ?? new Action(ActionType.None));
+                    }
+
+                    break;
+            }
+        }
+
+        return actions;
+    }
 }
